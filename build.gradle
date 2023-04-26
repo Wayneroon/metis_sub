@@ -1,0 +1,61 @@
+plugins {
+    id 'org.springframework.boot' version '2.6.6'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'war'
+    id 'java'
+}
+
+group 'org.albamon'
+version '1.0-SNAPSHOT'
+description = 'metis-sub'
+
+repositories {
+    mavenCentral()
+    maven {
+        url "https://repo.spring.io/milestone"
+    }
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    // Lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    // lombok getter setter mapping
+    annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+
+    // logback
+    implementation 'ch.qos.logback:logback-core:1.2.9'
+    implementation 'ch.qos.logback:logback-classic:1.2.9'
+
+    implementation 'commons-io:commons-io:2.11.0'
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
+
+    // Test
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+task createProperties(dependsOn: processResources) {
+    doLast {
+        new File("$buildDir/resources/main/properties/version.properties").withWriter { w ->
+            Properties p = new Properties()
+            p['project.version'] = project.version.toString()
+            p.store w, null
+        }
+    }
+}
+
+war {
+    enabled = false
+}
